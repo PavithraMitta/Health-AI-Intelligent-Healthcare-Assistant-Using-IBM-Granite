@@ -4,19 +4,29 @@
 
 
 ---->from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-import os
 
-# Set your Hugging Face token securely
-os.environ['HF_TOKEN'] = "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"
+# Ask the user to input their Hugging Face token
+hf_token = input("Please enter your Hugging Face token: ").strip()
+
 model_id = "ibm-granite/granite-3.3-2b-instruct"
 
-# Load tokenizer and model using your token
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=os.getenv('HF_TOKEN'))
-model = AutoModelForCausalLM.from_pretrained(model_id, use_auth_token=os.getenv('HF_TOKEN'))
+# Load tokenizer and model using the user-provided token
+tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=hf_token)
+model = AutoModelForCausalLM.from_pretrained(model_id, use_auth_token=hf_token)
 
 # Create a pipeline for text generation
-generator = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map="auto", max_new_tokens=512)
+generator = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    device_map="auto",
+    max_new_tokens=512,
+)
 
+# Example usage
+prompt = "What is the capital of France?"
+result = generator(prompt)[0]["generated_text"]
+print(result)
 
 
 ----->import gradio as gr
